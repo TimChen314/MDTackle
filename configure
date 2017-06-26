@@ -1,0 +1,47 @@
+# This file is based on the configure of galamost-0.0.2
+declare -a comand
+
+gprof=""
+gdb=""
+
+comand[1]=gprof
+comand[2]=gdb
+
+cp compile/compilefile Makefile
+
+
+for i in $*    # parse the setup
+do
+keyword=${i%%=*}
+value=${i##*=}
+if [ "$keyword"x = "--gprof"x -a "$value"x != ''x ]; then
+  gprof=$value
+elif [ "$keyword"x = "--gdb"x -a "$value"x != ''x ]; then
+  gdb=$value
+else
+  echo "Sorry, comand $keyword not been recognized or do not give value!"
+  exit 1
+fi
+done
+
+for i in ${comand[@]}
+do
+keyword=${!i}
+#  ct: Á´Ê½ÒýÓÃ indirect expansion  Actually, the varible "keyword" is the value of corresponding keyword. 
+#  In prefix's case, keyword storage directory that you input.
+if [ "$keyword"x = 'on'x -a "$i"x = "gprof"x ]; then
+  echo "Notice : Set gprof to be [on]!"
+elif [ "$i"x = "gprof"x ]; then
+  sed -i 's/$(gprof)//g' Makefile
+  echo "Notice : Set gprof to be [off] by default!"
+fi
+
+if [ "$keyword"x = 'on'x -a "$i"x = "gdb"x ]; then
+  echo "Notice : Set gdb to be [on]!"
+elif [ "$i"x = "gdb"x ]; then
+  sed -i 's/$(gdb)//g' Makefile
+  echo "Notice : Set gdb to be [off] by default!"
+fi
+done
+
+
