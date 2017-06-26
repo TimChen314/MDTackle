@@ -1,7 +1,7 @@
 
 
 library = tackle.so
-prefix = /home/ct/bin/IBI-tools/zyl-code/PyTackle_v0.4
+prefix = PREFIX
 sharedir = ${prefix}/share
 testdir = ${prefix}/test
 

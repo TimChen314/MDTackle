@@ -29,6 +29,7 @@ class BinReader : public Reader {
 public:
     BinReader(const std::string& fname);
     BinReader(const std::string& fname, bool m_only_parse_head);
+    BinReader(const std::string& fname, const unsigned block_begin_, const unsigned block_end_);
 
     virtual unsigned int getNumParticles() const;
     virtual unsigned int getNumParticleTypes() const;
@@ -88,27 +89,30 @@ private:
     std::vector<vec4Dfloat> m_angmom;  //!< n_bodies length 1D array of angular momenta in the space frame
     std::vector<vec_int> m_body_image; //!< n_bodies length 1D array of the body image
 
-    bool m_input_position=false;   //!< true if the particle positions should be written
-    bool m_input_image=false;      
-    bool m_input_velocity=false;   
-    bool m_input_type=false;       
-    bool m_input_mass=false;       
-    bool m_input_diameter=false;   
-    bool m_input_body=false;       
-    bool m_input_accel=false;      
-    bool m_input_charge=false;     
-    bool m_input_moleculeid=false; 
-    bool m_input_virial=false;     
-    bool m_input_force=false;      
-    bool m_input_anisotropy=false; 
-    bool m_input_bond=false;       
-    bool m_input_angle=false;      
-    bool m_input_dihedral=false;   
-    bool m_input_integrator=false; 
-    bool m_input_rigid=false;      
-    bool m_input_cris=false;
-    bool m_input_init=false;
-    bool m_only_parse_head=false; //ct:  if you don't need read position and other arrays, then set this bool varible true.
+    bool m_input_position = false; //!< true if the particle positions should be written
+    bool m_input_image = false;
+    bool m_input_velocity = false;
+    bool m_input_type = false;
+    bool m_input_mass = false;
+    bool m_input_diameter = false;
+    bool m_input_body = false;
+    bool m_input_accel = false;
+    bool m_input_charge = false;
+    bool m_input_moleculeid = false;
+    bool m_input_virial = false;
+    bool m_input_force = false;
+    bool m_input_anisotropy = false;
+    bool m_input_bond = false;
+    bool m_input_angle = false;
+    bool m_input_dihedral = false;
+    bool m_input_integrator = false;
+    bool m_input_rigid = false;
+    bool m_input_cris = false;
+    bool m_input_init = false;
+    bool m_only_parse_head = false; //ct:  if you don't need read position and other arrays, then set this bool varible true.
+    bool m_read_by_block = false;
+
+    unsigned block_begin, block_end; //ct: used for reading by block
 };
 
 void export_BinReader();

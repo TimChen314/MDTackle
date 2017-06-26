@@ -1,7 +1,7 @@
 
 
 library = mdtackle.so
-prefix = /home/ct/bin/IBI-tools/zyl-code/PyTackle_v0.2
+prefix = $(prefix)
 sharedir = ${prefix}/share
 testdir = ${prefix}/test
 
@@ -16,12 +16,11 @@ cpp_files = particles \
 
 
 CPPFLAGS = -std=c++11 -O3 -funroll-loops -DNDEBUG -Wall -Wno-unknown-pragmas -fPIC $(gprof) 
-CUDAFLAGS = -gencode=arch=compute_20,code=compute_20 -Xcompiler \"-fopenmp\",\"-fPIC\",\"-O3\",\"-funroll-loops\",\"-DNDEBUG\",\"-Wall\",\"-Wno-unknown-pragmas\" $(gprof) 
-LDFLAGS = -fPIC -fopenmp -O3 -funroll-loops -DNDEBUG -Wall -Wno-unknown-pragmas -shared -Wl,-soname,$(library)
-LINKLIB = -lboost_thread-mt -lboost_filesystem -lboost_python -lboost_program_options -lboost_signals -lboost_iostreams -lboost_system -lpthread -lpython2.6 -lutil -ldl /usr/local/cuda/lib64/libcudart.so /usr/local/cuda/lib64/libcufft.so -Wl,-rpath,/usr/local/cuda/lib64
+LDFLAGS = -fPIC -O3 -funroll-loops -DNDEBUG -Wall -Wno-unknown-pragmas -shared -Wl,-soname,$(library)
+LINKLIB = -lboost_thread-mt -lboost_filesystem -lboost_python -lboost_program_options -lboost_signals -lboost_iostreams -lboost_system -lpthread -lpython2.7 -lutil -ldl /usr/local/cuda/lib64/libcudart.so /usr/local/cuda/lib64/libcufft.so -Wl,-rpath,/usr/local/cuda/lib64
 
 
-others := /usr/include/python2.6 /usr/local/cuda/include /usr/include
+others := /usr/include/python2.7 /usr/local/cuda/include /usr/include
 INCLUDE_HEADS_FIELS = $(addprefix -I,$(cpp_files) $(others))
 vpath %.cc ${cpp_files} ${others}
 

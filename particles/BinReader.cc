@@ -1,6 +1,4 @@
-
 #include "BinReader.h"
-
 #include <algorithm>
 #include <fstream>
 #include <iostream>
@@ -38,6 +36,15 @@ BinReader::BinReader(const std::string& fname, bool m_only_parse_head_tmp)
     readFile(fname);
 }
 
+BinReader::BinReader(const std::string& fname, const unsigned block_begin_, const unsigned block_end_)
+    : block_begin(block_begin_)
+    , block_end(block_end_)
+{
+    m_timestep = 0;
+    m_num_dimensions = 3;
+    file_version = -1;
+    readFile(fname);
+}
 void BinReader::ReadExistTerm()
 {
     m_ExistTerm.insert("box");
@@ -212,25 +219,9 @@ void BinReader::readFile(const string& fname)
     if (ext == string(".gz"))
         enable_decompression = true;
 
-    /*
-#ifndef ENABLE_ZLIB
-if (enable_decompression)
-{
-cerr << endl << "***Error! BinaryInitialzier is trying to read a compressed .gz file, but ZLIB was not" << endl;
-cerr << "enabled in this build of " << endl << endl;
-throw runtime_error("Error reading binary file");
-}
-#endif
-*/
-
-    // Open the file
-    //cout<< "Reading " << fname << "..." << endl;
-    // setup the file input for decompression
     filtering_istream f;
-    //    #ifdef ENABLE_ZLIB
     if (enable_decompression)
         f.push(gzip_decompressor());
-    //    #endif
     f.push(file_source(fname.c_str(), ios::in | ios::binary));
 
     // handle errors
@@ -259,8 +250,17 @@ throw runtime_error("Error reading binary file");
     }
 
     f.read((char*)&file_version, sizeof(int));
-
     // right now, the version tag doesn't do anything: just warn if they don't match
+    if (file_version != 3202 && m_read_by_block) {
+        cerr << "Error! Read by block can only be used while the file version is 3202." << endl
+             << "Version of present file " << fname << " is " << file_version << ". " << endl;
+        throw runtime_error("Error Read by block");
+    }
+    if ((enable_decompression) && m_read_by_block) {
+        cerr << "Error! Read by block can only be used while the file is not gziped." << endl;
+        throw runtime_error("Error Can not Read by block");
+    }
+
     if (file_version == 3201) {
         f.read((char*)&m_input_position, sizeof(bool));
         f.read((char*)&m_input_image, sizeof(bool));
